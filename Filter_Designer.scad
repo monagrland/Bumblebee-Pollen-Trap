@@ -1,4 +1,5 @@
 //Variables
+$fn = 100;
 base_plate_length_lower = 26;
 base_plate_length_upper = 28;
 base_plate_width_lower = 34;
@@ -50,13 +51,13 @@ base_plate_faces = [
 [7,0,8,15],
 [8,9,10,11,12,13,14,15]
 ];
-polyhedron(base_plate_points, base_plate_faces);
+*polyhedron(base_plate_points, base_plate_faces);
 
 //top bar
-translate([(base_plate_length_upper-bar_length)/2,base_plate_width_upper,base_plate_thickness])rotate([0,0,270])cube([bar_width, bar_length, bar_height]);
+*translate([(base_plate_length_upper-bar_length)/2,base_plate_width_upper,base_plate_thickness])rotate([0,0,270])cube([bar_width, bar_length, bar_height]);
 
 //diameter text
-translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickness])rotate([0,0,180])linear_extrude(diameter_text_thickness)text(str(diameter_hole), size=diameter_text_size,halign="center",valign="center");
+*translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickness])rotate([0,0,180])linear_extrude(diameter_text_thickness)text(str(diameter_hole), size=diameter_text_size,halign="center",valign="center");
 
 //bottom bar/triangle
 bottom_bar_points=[
@@ -76,4 +77,92 @@ bottom_bar_faces = [
 [0,4,3],
 [1,2,5],
 ];
-translate([(base_plate_length_upper-bar_length)/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom,base_plate_thickness])translate([bar_length,0,0])rotate([0,0,180])polyhedron(bottom_bar_points, bottom_bar_faces);
+*translate([(base_plate_length_upper-bar_length)/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom,base_plate_thickness])translate([bar_length,0,0])rotate([0,0,180])polyhedron(bottom_bar_points, bottom_bar_faces);
+
+module showPoints(v) {
+    for (i = [0: len(v)-1]) {
+        translate(v[i]) color("red") 
+        text(str(i), font = "Courier New", size=1.5);
+         
+    }
+}
+
+module slide (){
+    width = 5.5;
+    length = 4.5;
+    height = 4;
+    angle = 20;
+    
+    intersection(){
+    union(){
+    translate([0,3.1,0.5])
+    difference(){
+    difference(){
+    translate([0,0,height/2])
+    rotate([angle,0,0])
+    difference(){
+    scale([width*1.64,length*2.1,height*1.18]) sphere(d=1);
+    translate([0,0,2])rotate([90,0,180])cylinder(h=20,d1=10,d2=0,center=true);
+    }
+    translate([-(length),6-(width*1.65)/2,0])cube([width*2,length*1.5,height*2]);
+}
+    union(){
+    translate([width*1.05,-length/2,height])cube([width,length*2,height*2],center=true);
+    translate([-width*1.05,-length/2,height])cube([width,length*2,height*2],center=true);
+    }
+    translate([-width,-length*2.7,-height])cube([width*2,length*2,height*2]);
+}
+    infill_length = 6.05/2;
+    infill_width = 1.4;
+    infill_height = 4.5;
+    infill_points=[
+    [1.27,0,0], //0 base
+    [infill_length,0,0], //1 
+    [infill_length,0,infill_height], //2
+    [0,0,infill_height], //3
+    [infill_length,infill_width,0], //4
+    [infill_length,infill_width,infill_height], //5
+    [0,infill_width,infill_height], //6
+    [0,infill_width,infill_height*1.5/2], //7
+    [0,0,infill_height/2] //8
+    ];
+
+    infill_faces = [
+    [8,3,2,1,0],
+    [0,1,4],
+    [1,2,5,4],
+    [3,6,5,2],
+    [3,8,7,6],
+    [8,0,7],
+    [7,0,4],
+    [4,5,6,7]
+    ];
+    *showPoints(infill_points);
+    translate([0,0,0])rotate([90,0,180])polyhedron(infill_points, infill_faces);
+    
+    mirror([1,0,0])rotate([90,0,180])polyhedron(infill_points, infill_faces);
+}
+    translate([(-width*1.1)/2,0,0])cube([width*1.1,length,height*2]);
+}
+}
+*slide();
+
+module ring(h=1,outside_diameter = 10,cutout_diameter = 5,de = 0.1) {
+    difference() {
+        cylinder(h=h, r=outside_diameter/2);
+        translate([0, 0, -de])
+            cylinder(h=h+2*de, r=cutout_diameter/2);
+    }
+}
+
+module filter(diameter, outer_ring_width, outer_ring_height, inner_ring_width, inner_ring_height, number_slides){
+    ring(outer_ring_height, diameter + 2*outer_ring_width, diameter);
+    translate([0,0,outer_ring_height])ring(inner_ring_height, diameter + 2*inner_ring_width, diameter);
+    for (i=[0:number_slides-1]){
+    mirror(v=[0,0,0])rotate([0,0,((360/number_slides)*i)])slide();
+    }
+    
+    
+}
+
+filter(diameter_hole, 4, 2, 1,1,4);
