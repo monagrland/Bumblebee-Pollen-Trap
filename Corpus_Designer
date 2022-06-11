@@ -1,0 +1,84 @@
+//Variables
+cube_design = 1;
+grid_pattern = "squares"; //squares or stripes
+plexi_cube_width = cube_design==1 ? 40:30;
+plexi_cube_length = cube_design==1 ? 35:30;
+plexi_cube_depth = 20;
+plexi_cube_thickness = 2;
+plexi_cube_buffer = 1; //1mm room in every direction
+
+
+tube_thickness = 2;
+
+tube_width = 28;
+tube_length = 28;
+tube_depth = 42;
+
+//module to show points of a polyhedron
+module showPoints(v) {
+    for (i = [0: len(v)-1]) {
+        translate(v[i]) color("red") 
+        text(str(i), font = "Courier New", size=1.5);
+         
+    }
+}
+
+//plexi_cube part of the tube
+difference(){
+    cube([plexi_cube_width + 2*plexi_cube_thickness + 2*plexi_cube_buffer, plexi_cube_depth, plexi_cube_length+2*plexi_cube_thickness + 2*plexi_cube_buffer]);
+    translate([plexi_cube_thickness,0,plexi_cube_thickness])cube([plexi_cube_width + 2*plexi_cube_buffer, plexi_cube_depth, plexi_cube_length + 2*plexi_cube_buffer]);
+}
+
+//angle
+tube_distance_left = (plexi_cube_width/2+plexi_cube_buffer+plexi_cube_thickness-tube_width/2-tube_thickness);
+tube_distance_bottom = (plexi_cube_length/2+plexi_cube_buffer+plexi_cube_thickness-tube_length/2-tube_thickness);
+angle_depth = max(tube_distance_left, tube_distance_bottom);
+outer_cube_width = plexi_cube_width + 2*plexi_cube_thickness + 2*plexi_cube_buffer;
+outer_cube_length = plexi_cube_length + 2*plexi_cube_thickness + 2*plexi_cube_buffer;
+
+angle_points = [
+    [0,0,0], //0
+    [outer_cube_width,0,0],//1
+    [outer_cube_width,0,outer_cube_length],//2
+    [0,0,outer_cube_length],//3
+    [tube_distance_left,0,tube_distance_bottom],//4
+    [outer_cube_width-tube_distance_left,0,tube_distance_bottom],//5
+    [outer_cube_width-tube_distance_left,0,outer_cube_length-tube_distance_bottom],//6
+    [tube_distance_left,0,outer_cube_length-tube_distance_bottom],//7
+    [tube_distance_left,angle_depth,tube_distance_bottom],//8
+    [outer_cube_width-tube_distance_left,angle_depth,tube_distance_bottom],//9
+    [outer_cube_width-tube_distance_left,angle_depth,outer_cube_length-tube_distance_bottom],//10
+    [tube_distance_left,angle_depth,outer_cube_length-tube_distance_bottom],//11
+    
+];
+
+*showPoints(angle_points);
+angle_faces = [
+    [1,0,4,5],
+    [0,1,9,8],
+    [5,4,8,9],
+    [2,1,5,6],
+    [1,2,10,9],
+    [6,5,9,10],
+    [3,2,6,7],
+    [2,3,11,10],
+    [7,6,10,11],
+    [0,3,7,4],
+    [3,0,8,11],
+    [4,7,11,8],
+];
+
+
+translate([0,plexi_cube_depth,0])
+polyhedron(angle_points, angle_faces);
+//tube
+translate([plexi_cube_width/2-tube_width/2 + plexi_cube_buffer,plexi_cube_depth ,plexi_cube_length/2-tube_length/2 + plexi_cube_buffer]) 
+
+difference(){
+    cube([tube_width+2*tube_thickness, tube_depth + angle_depth, tube_length + 2*tube_thickness]);
+    translate([tube_thickness,0,tube_thickness])cube([tube_width, tube_depth + angle_depth, tube_length]);
+}
+
+
+
+
