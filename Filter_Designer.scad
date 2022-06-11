@@ -18,67 +18,17 @@ lower_bar_width = 2;
 lower_bar_height = 2;
 lower_bar_distance_from_bottom = 6;
 
+outer_ring_width = 4;
+outer_ring_height = 2;
+inner_ring_width = 1;
+inner_ring_height = 1;
+number_slides = 4;
 
-//base plate
-base_plate_points = [
-[0,0,0], //0, start
-[0,base_plate_width_upper,0], //1, links oben
-[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper,0], //2 linke kante untere platte
-[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper+base_plate_width_lower, 0],//3
-[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper+base_plate_width_lower, 0],//4
-[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper, 0],//5
-[base_plate_length_upper,base_plate_width_upper, 0],//6
-[base_plate_length_upper,0, 0],//7
-[0,0,base_plate_thickness], //8, start
-[0,base_plate_width_upper,base_plate_thickness], //9, links oben
-[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper,base_plate_thickness], //10 linke kante untere platte
-[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper+base_plate_width_lower, base_plate_thickness],//11
-[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper+base_plate_width_lower, base_plate_thickness],//12
-[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper, base_plate_thickness],//13
-[base_plate_length_upper,base_plate_width_upper, base_plate_thickness],//14
-[base_plate_length_upper,0, base_plate_thickness]//15
-];
+slide_width_factor = 1;
+slide_length_factor = 1;
+slide_height_factor = 1;
 
-base_plate_faces = [
-[7,6,5,4,3,2,1,0],//bottom
-[0,1,9,8],
-[1,2,10,9],
-[2,3,11,10],
-[3,4,12,11],
-[4,5,13,12],
-[5,6,14,13],
-[6,7,15,14],
-[7,0,8,15],
-[8,9,10,11,12,13,14,15]
-];
-*polyhedron(base_plate_points, base_plate_faces);
-
-//top bar
-*translate([(base_plate_length_upper-bar_length)/2,base_plate_width_upper,base_plate_thickness])rotate([0,0,270])cube([bar_width, bar_length, bar_height]);
-
-//diameter text
-*translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickness])rotate([0,0,180])linear_extrude(diameter_text_thickness)text(str(diameter_hole), size=diameter_text_size,halign="center",valign="center");
-
-//bottom bar/triangle
-bottom_bar_points=[
-[0,0,0], //0 base
-[bar_length,0,0], //1 
-[bar_length,0,lower_bar_height], //2
-[0,0,lower_bar_height], //3
-[0,lower_bar_width,0], //4
-[bar_length,lower_bar_width,0], //5
-[0,lower_bar_width,lower_bar_height] //6
-];
-
-bottom_bar_faces = [
-[0,1,2,3],
-[0,1,5,4],
-[2,3,4,5],
-[0,4,3],
-[1,2,5],
-];
-*translate([(base_plate_length_upper-bar_length)/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom,base_plate_thickness])translate([bar_length,0,0])rotate([0,0,180])polyhedron(bottom_bar_points, bottom_bar_faces);
-
+//module to show points of a polyhedron
 module showPoints(v) {
     for (i = [0: len(v)-1]) {
         translate(v[i]) color("red") 
@@ -87,13 +37,14 @@ module showPoints(v) {
     }
 }
 
+//module to create slides for the filter
 module slide (){
     width = 5.5;
     length = 4.5;
     height = 4;
     angle = 20;
     
-    intersection(){
+    render()intersection(){
     union(){
     translate([0,3.1,0.5])
     difference(){
@@ -145,8 +96,8 @@ module slide (){
     translate([(-width*1.1)/2,0,0])cube([width*1.1,length,height*2]);
 }
 }
-*slide();
 
+//module to create rings
 module ring(h=1,outside_diameter = 10,cutout_diameter = 5,de = 0.1) {
     difference() {
         cylinder(h=h, r=outside_diameter/2);
@@ -155,14 +106,93 @@ module ring(h=1,outside_diameter = 10,cutout_diameter = 5,de = 0.1) {
     }
 }
 
+
+//module to create the filter with costumizable slides
 module filter(diameter, outer_ring_width, outer_ring_height, inner_ring_width, inner_ring_height, number_slides){
+    difference(){
+    union(){
     ring(outer_ring_height, diameter + 2*outer_ring_width, diameter);
     translate([0,0,outer_ring_height])ring(inner_ring_height, diameter + 2*inner_ring_width, diameter);
-    for (i=[0:number_slides-1]){
-    mirror(v=[0,0,0])rotate([0,0,((360/number_slides)*i)])slide();
     }
-    
+    for (i=[0:number_slides-1]){
+        X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * cos((360/number_slides)*i);
+        Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * sin((360/number_slides)*i);
+        translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])scale([1,1,10])slide();
+    }
+}
+    for (i=[0:number_slides-1]){
+        X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * cos((360/number_slides)*i);
+        Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * sin((360/number_slides)*i);
+        translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])slide();
+    }
     
 }
 
-filter(diameter_hole, 4, 2, 1,1,4);
+
+difference(){
+union(){
+//base plate
+base_plate_points = [
+[0,0,0], //0, start
+[0,base_plate_width_upper,0], //1, links oben
+[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper,0], //2 linke kante untere platte
+[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper+base_plate_width_lower, 0],//3
+[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper+base_plate_width_lower, 0],//4
+[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper, 0],//5
+[base_plate_length_upper,base_plate_width_upper, 0],//6
+[base_plate_length_upper,0, 0],//7
+[0,0,base_plate_thickness], //8, start
+[0,base_plate_width_upper,base_plate_thickness], //9, links oben
+[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper,base_plate_thickness], //10 linke kante untere platte
+[(base_plate_length_upper - base_plate_length_lower)/2,base_plate_width_upper+base_plate_width_lower, base_plate_thickness],//11
+[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper+base_plate_width_lower, base_plate_thickness],//12
+[((base_plate_length_upper - base_plate_length_lower)/2)+base_plate_length_lower,base_plate_width_upper, base_plate_thickness],//13
+[base_plate_length_upper,base_plate_width_upper, base_plate_thickness],//14
+[base_plate_length_upper,0, base_plate_thickness]//15
+];
+
+base_plate_faces = [
+[7,6,5,4,3,2,1,0],//bottom
+[0,1,9,8],
+[1,2,10,9],
+[2,3,11,10],
+[3,4,12,11],
+[4,5,13,12],
+[5,6,14,13],
+[6,7,15,14],
+[7,0,8,15],
+[8,9,10,11,12,13,14,15]
+];
+polyhedron(base_plate_points, base_plate_faces);
+
+//top bar
+translate([(base_plate_length_upper-bar_length)/2,base_plate_width_upper,base_plate_thickness])rotate([0,0,270])cube([bar_width, bar_length, bar_height]);
+
+//diameter text
+translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickness])rotate([0,0,180])linear_extrude(diameter_text_thickness)text(str(diameter_hole), size=diameter_text_size,halign="center",valign="center");
+
+//bottom bar/triangle
+bottom_bar_points=[
+[0,0,0], //0 base
+[bar_length,0,0], //1 
+[bar_length,0,lower_bar_height], //2
+[0,0,lower_bar_height], //3
+[0,lower_bar_width,0], //4
+[bar_length,lower_bar_width,0], //5
+[0,lower_bar_width,lower_bar_height] //6
+];
+
+bottom_bar_faces = [
+[3,2,1,0],
+[0,1,5,4],
+[2,3,4,5],
+[0,4,3],
+[1,2,5],
+];
+translate([(base_plate_length_upper-bar_length)/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom,base_plate_thickness])translate([bar_length,0,0])rotate([0,0,180])polyhedron(bottom_bar_points, bottom_bar_faces);
+
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(outer_ring_width+diameter_hole),base_plate_thickness])scale([slide_width_factor, slide_length_factor, slide_height_factor])filter(diameter_hole, outer_ring_width, outer_ring_height, inner_ring_width,inner_ring_height,number_slides);
+}
+//hole
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(outer_ring_width+diameter_hole),0])cylinder(h=base_plate_thickness, d=diameter_hole);
+}
