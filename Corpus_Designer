@@ -22,7 +22,7 @@ tube_depth = 38;
 security_bar_width = 4;
 
 slide_bar_length = 39;
-slide_bar_width = 2;
+slide_bar_width = 1.6; //decreased from 2 to 1,6 for buffer
 slide_bar_height = 2;
 //if square grid pattern
 
@@ -189,12 +189,12 @@ else if (grid_pattern == "squares3") square_grid3();
 }
 translate([tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])cube([security_bar_width,insert_distance_from_tube_end,tube_length]);
 translate([tube_width-tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])cube([security_bar_width,insert_distance_from_tube_end,tube_length]);
-translate([-tube_thickness,tube_depth+angle_depth-slide_bar_length,0])
-color("red")union(){cube([slide_bar_width,slide_bar_length,slide_bar_height]); 
-cube([slide_bar_width,2,4]);
+translate([-slide_bar_width,tube_depth+angle_depth-slide_bar_length,0])
+color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]); 
+;
 }
 translate([tube_width+2*tube_thickness,tube_depth+angle_depth-slide_bar_length,0])
-color("red")union(){cube([slide_bar_width,slide_bar_length,slide_bar_height]); 
-cube([slide_bar_width,2,4]);
+color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]); 
+
 }
 }
