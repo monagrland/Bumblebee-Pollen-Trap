@@ -1,11 +1,11 @@
 //Variables
 cube_design = 2;
-grid_pattern = "squares3"; //squares, squares2 (rotated by 45°) or stripes
-plexi_cube_width = cube_design==1 ? 40:33;
+grid_pattern = "squares3"; //squares, squares2 (rotatet by 45°) or stripes
+plexi_cube_width = cube_design==1 ? 39:33;
 plexi_cube_length = cube_design==1 ? 35:30;
 plexi_cube_depth = 20;
 plexi_cube_thickness = 2;
-plexi_cube_buffer = 1; //1mm room in every direction
+plexi_cube_buffer = 0.5; //1mm room in every direction
 insert_bar_height = 6; //needs to be the same as in the insert creator
 insert_bar_length = 16; //needs to be the same as in the insert creator
 insert_base_length = 28; //needs to be the same as "base plate length upper" in the insert creator
@@ -17,18 +17,18 @@ tube_thickness = 2;
 
 tube_width = 28;
 tube_length = 28;
-tube_depth = 38;
+tube_depth = 38.5;
 
 security_bar_width = 4;
 
-slide_bar_length = 39;
+slide_bar_length = 40.5;
 slide_bar_width = 1.6; //decreased from 2 to 1,6 for buffer
 slide_bar_height = 2;
 //if square grid pattern
 
 square_width = 4;
 square_length = 4;
-square_distance = 3;
+square_distance = 2.5;
 number_squares_per_row = 4;
 number_squares_per_column = 3;
 
