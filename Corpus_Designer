@@ -1,6 +1,6 @@
 //Variables
 cube_design = 2;
-grid_pattern = "squares3"; //squares, squares2 (rotatet by 45°) or stripes
+grid_pattern = "squares3"; //squares, squares2 (rotated by 45°) or stripes
 plexi_cube_width = cube_design==1 ? 40:33;
 plexi_cube_length = cube_design==1 ? 35:30;
 plexi_cube_depth = 20;
