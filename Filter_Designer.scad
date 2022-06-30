@@ -6,7 +6,7 @@ base_plate_width_lower = 34;
 base_plate_width_upper = 18;
 base_plate_thickness = 2;
 
-bar_type = "bar"; //bar or angled (for easier printing)
+bar_type = "angled"; //bar or angled (for easier printing)
 bar_length = 16;
 bar_width = 2;
 bar_height = 6;
@@ -19,6 +19,7 @@ lower_bar_width = 2;
 lower_bar_height = 2;
 lower_bar_distance_from_bottom = 6;
 
+hole_structure = "None"; //None, slides or triangle(TODO)
 outer_ring_width = 4;
 outer_ring_height = 2;
 inner_ring_width = 1;
@@ -166,9 +167,11 @@ base_plate_faces = [
 ];
 polyhedron(base_plate_points, base_plate_faces);
 
-/*//top bar
+if (bar_type=="bar"){
+//top bar
 translate([(base_plate_length_upper-bar_length)/2,base_plate_width_upper,base_plate_thickness])rotate([0,0,270])cube([bar_width, bar_length, bar_height]);
-*/
+}
+else if (bar_type=="angled"){
 //top bar angled
 insert_base_length = base_plate_length_upper;
 insert_bar_length = bar_length;
@@ -204,7 +207,7 @@ insert_slot_upper_faces = [
     [11,10,9,8,7,6]
 ];
 translate([0,base_plate_width_upper,0])rotate([90,0,0])polyhedron(insert_slot_upper_points,insert_slot_upper_faces);
-
+}
 //diameter text
 translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickness])rotate([0,0,180])linear_extrude(diameter_text_thickness)text(str(diameter_hole), size=diameter_text_size,halign="center",valign="center");
 
@@ -227,8 +230,9 @@ bottom_bar_faces = [
 [1,2,5],
 ];
 translate([(base_plate_length_upper-bar_length)/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom,base_plate_thickness])translate([bar_length,0,0])rotate([0,0,180])polyhedron(bottom_bar_points, bottom_bar_faces);
-
+if (hole_structure == "slides"){
 translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(outer_ring_width+diameter_hole),base_plate_thickness])scale([slide_width_factor, slide_length_factor, slide_height_factor])filter(diameter_hole, outer_ring_width, outer_ring_height, inner_ring_width,inner_ring_height,number_slides);
+}
 }
 //hole
 translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(outer_ring_width+diameter_hole),0])cylinder(h=base_plate_thickness, d=diameter_hole);
