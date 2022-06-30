@@ -32,9 +32,9 @@ slide_height_factor = 1;
 //module to show points of a polyhedron
 module showPoints(v) {
     for (i = [0: len(v)-1]) {
-        translate(v[i]) color("red") 
+        translate(v[i]) color("red")
         text(str(i), font = "Courier New", size=1.5);
-         
+
     }
 }
 
@@ -44,7 +44,7 @@ module slide (){
     length = 4.5;
     height = 4;
     angle = 20;
-    
+
     render()intersection(){
     union(){
     translate([0,3.1,0.5])
@@ -69,7 +69,7 @@ module slide (){
     infill_height = 4.5;
     infill_points=[
     [1.27,0,0], //0 base
-    [infill_length,0,0], //1 
+    [infill_length,0,0], //1
     [infill_length,0,infill_height], //2
     [0,0,infill_height], //3
     [infill_length,infill_width,0], //4
@@ -91,7 +91,7 @@ module slide (){
     ];
     *showPoints(infill_points);
     translate([0,0,0])rotate([90,0,180])polyhedron(infill_points, infill_faces);
-    
+
     mirror([1,0,0])rotate([90,0,180])polyhedron(infill_points, infill_faces);
 }
     translate([(-width*1.1)/2,0,0])cube([width*1.1,length,height*2]);
@@ -126,7 +126,7 @@ module filter(diameter, outer_ring_width, outer_ring_height, inner_ring_width, i
         Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * sin((360/number_slides)*i);
         translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])slide();
     }
-    
+
 }
 
 
@@ -168,7 +168,7 @@ polyhedron(base_plate_points, base_plate_faces);
 
 /*//top bar
 translate([(base_plate_length_upper-bar_length)/2,base_plate_width_upper,base_plate_thickness])rotate([0,0,270])cube([bar_width, bar_length, bar_height]);
-*/ 
+*/
 //top bar angled
 insert_base_length = base_plate_length_upper;
 insert_bar_length = bar_length;
@@ -211,7 +211,7 @@ translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickne
 //bottom bar/triangle
 bottom_bar_points=[
 [0,0,0], //0 base
-[bar_length,0,0], //1 
+[bar_length,0,0], //1
 [bar_length,0,lower_bar_height], //2
 [0,0,lower_bar_height], //3
 [0,lower_bar_width,0], //4
