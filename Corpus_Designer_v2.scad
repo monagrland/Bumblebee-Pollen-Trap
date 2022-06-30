@@ -1,8 +1,8 @@
 //Variables
-cube_design = 2;
+cube_design = 1;
 grid_pattern = "squares"; //squares, squares2 (rotated by 45°)
-plexi_cube_width = cube_design==1 ? 39:32;
-plexi_cube_length = cube_design==1 ? 35:30;
+plexi_cube_width = 39; //39 for cube1, 32 for cube2
+plexi_cube_length = 35; //35 for cube1, 30 for cube2
 plexi_cube_depth = 20;
 plexi_cube_thickness = 2;
 plexi_cube_buffer = 0.5; //1mm room in every direction
@@ -78,7 +78,7 @@ for (i=[0:number_squares_per_row-1]){
 
 
 //Complete Corpus
-*union(){
+union(){
 
 //plexi_cube part of the tube
 difference(){
@@ -128,11 +128,13 @@ polyhedron(angle_points, angle_faces);
 //tube
 translate([plexi_cube_width/2-tube_width/2 + plexi_cube_buffer,plexi_cube_depth ,plexi_cube_length/2-tube_length/2 + plexi_cube_buffer]) 
 for(i=[0:tube_count-1]){
-translate([0,tube_depth*i,0])
+if (i==0){
+translate([0,tube_depth*i,0])    
 union(){
 difference(){
     cube([tube_width+2*tube_thickness, tube_depth + angle_depth, tube_length + 2*tube_thickness]);
     translate([tube_thickness,0,tube_thickness])cube([tube_width, tube_depth + angle_depth, tube_length]);
+    
 
 insert_slot_upper_points = [
     [0,0,0], //0
@@ -180,6 +182,65 @@ color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]);
 translate([tube_width+2*tube_thickness,tube_depth+angle_depth-slide_bar_length,0])
 color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]); 
 
+}
+}
+}
+else{
+translate([0,tube_depth*i,0])    
+union(){
+difference(){
+    translate([0,angle_depth,0])
+    cube([tube_width+2*tube_thickness, tube_depth , tube_length + 2*tube_thickness]);
+    translate([tube_thickness,0,tube_thickness])cube([tube_width, tube_depth + angle_depth, tube_length]);
+    
+
+insert_slot_upper_points = [
+    [0,0,0], //0
+    [insert_base_length,0,0],//1
+    [insert_base_length,insert_thickness + insert_buffer, 0],//2
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//3
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//4
+    [0,insert_thickness + insert_buffer, 0],//5
+    [0,0,tube_thickness], //6
+    [insert_base_length,0,tube_thickness],//7
+    [insert_base_length,insert_thickness + insert_buffer, tube_thickness],//8
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//9
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//10
+    [0,insert_thickness + insert_buffer, tube_thickness],//11
+];
+
+*showPoints(insert_slot_upper_points);
+
+insert_slot_upper_faces = [
+    [0,1,2,3,4,5],
+    [0,5,11,6],
+    [5,4,10,11],
+    [4,3,9,10],
+    [3,2,8,9],
+    [2,1,7,8],
+    [1,0,6,7],
+    [11,10,9,8,7,6]
+];
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_bar_height+insert_thickness+insert_buffer)-insert_distance_from_tube_end,tube_length+tube_thickness])translate([insert_base_length,insert_bar_height + insert_thickness + insert_buffer,0])rotate([0,0,180])polyhedron(insert_slot_upper_points,insert_slot_upper_faces);
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_thickness+insert_buffer)-insert_distance_from_tube_end,0])cube([insert_base_length,insert_thickness+insert_buffer,tube_thickness]);
+
+
+if (grid_pattern == "squares") square_grid();
+else if (grid_pattern == "squares2") square_grid2();   
+    
+}
+translate([tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])cube([security_bar_width,insert_distance_from_tube_end,tube_length]);
+translate([tube_width-tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])cube([security_bar_width,insert_distance_from_tube_end,tube_length]);
+translate([-slide_bar_width,tube_depth+angle_depth-slide_bar_length,0])
+color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]); 
+;
+}
+translate([tube_width+2*tube_thickness,tube_depth+angle_depth-slide_bar_length,0])
+color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]); 
+
+}
 }
 }
 }
