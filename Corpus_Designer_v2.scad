@@ -88,7 +88,7 @@ for (i=[0:number_squares_per_row-1]){
 
 
 //Complete Corpus
-union(){
+*union(){
 
 //plexi_cube part of the tube
 difference(){
@@ -324,15 +324,15 @@ color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]);
 // funnel
 
 // darkener
-*union(){
+union(){
 translate([plexi_cube_thickness,0,plexi_cube_thickness])
 difference(){
 cube([plexi_cube_width+2*plexi_cube_thickness+2*plexi_cube_buffer,plexi_cube_depth_overall-plexi_cube_depth+plexi_cube_thickness,plexi_cube_length+2*plexi_cube_thickness+2*plexi_cube_buffer]);
 translate([plexi_cube_thickness+plexi_cube_buffer,plexi_cube_thickness,plexi_cube_thickness+plexi_cube_buffer])cube([plexi_cube_width+2*plexi_cube_buffer,plexi_cube_depth_overall-plexi_cube_depth,plexi_cube_length+2*plexi_cube_buffer]);
 }
-translate([0,plexi_cube_depth_overall-plexi_cube_depth+plexi_cube_thickness,0])
+translate([0,plexi_cube_depth_overall-plexi_cube_depth,0])
 difference(){
-cube([plexi_cube_width+4*plexi_cube_thickness+2*plexi_cube_buffer,darkener_overhang+plexi_cube_thickness,plexi_cube_length+4*plexi_cube_thickness+2*plexi_cube_buffer]);
-translate([plexi_cube_thickness+plexi_cube_buffer,0,plexi_cube_thickness+plexi_cube_buffer])cube([plexi_cube_width+2*plexi_cube_thickness+plexi_cube_buffer,darkener_overhang+plexi_cube_thickness,plexi_cube_length+2*plexi_cube_thickness+plexi_cube_buffer]);
+cube([plexi_cube_width+4*plexi_cube_thickness+2*plexi_cube_buffer,darkener_overhang+2*plexi_cube_thickness,plexi_cube_length+4*plexi_cube_thickness+2*plexi_cube_buffer]);
+translate([plexi_cube_thickness+plexi_cube_buffer,0,plexi_cube_thickness+plexi_cube_buffer])cube([plexi_cube_width+2*plexi_cube_thickness+plexi_cube_buffer,darkener_overhang+2*plexi_cube_thickness,plexi_cube_length+2*plexi_cube_thickness+plexi_cube_buffer]);
 }
 }
