@@ -88,7 +88,7 @@ for (i=[0:number_squares_per_row-1]){
 
 
 //Complete Corpus
-*union(){
+union(){
 
 //plexi_cube part of the tube
 difference(){
@@ -324,15 +324,22 @@ color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]);
 // funnel
 
 // darkener
-union(){
-translate([plexi_cube_thickness,0,plexi_cube_thickness])
+
+darkener_top_width = plexi_cube_width+2*plexi_cube_thickness+2*plexi_cube_buffer;
+darkener_top_depth = plexi_cube_depth_overall-plexi_cube_depth+plexi_cube_thickness;
+darkener_top_length = plexi_cube_length+2*plexi_cube_thickness+2*plexi_cube_buffer;
+darkener_bottom_width = plexi_cube_width+4*plexi_cube_thickness+4*plexi_cube_buffer;
+darkener_bottom_depth = darkener_overhang+2*plexi_cube_thickness;
+darkener_bottom_length = plexi_cube_length+4*plexi_cube_thickness+4*plexi_cube_buffer;
+
 difference(){
-cube([plexi_cube_width+2*plexi_cube_thickness+2*plexi_cube_buffer,plexi_cube_depth_overall-plexi_cube_depth+plexi_cube_thickness,plexi_cube_length+2*plexi_cube_thickness+2*plexi_cube_buffer]);
-translate([plexi_cube_thickness+plexi_cube_buffer,plexi_cube_thickness,plexi_cube_thickness+plexi_cube_buffer])cube([plexi_cube_width+2*plexi_cube_buffer,plexi_cube_depth_overall-plexi_cube_depth,plexi_cube_length+2*plexi_cube_buffer]);
+cube([darkener_bottom_width,darkener_top_depth,darkener_bottom_length]);
+translate([2*plexi_cube_thickness+2*plexi_cube_buffer,plexi_cube_thickness,2*plexi_cube_thickness+2*plexi_cube_buffer])cube([darkener_top_width-2*plexi_cube_thickness,darkener_top_depth-plexi_cube_thickness,darkener_top_length - 2*plexi_cube_thickness]);
 }
-translate([0,plexi_cube_depth_overall-plexi_cube_depth,0])
-difference(){
-cube([plexi_cube_width+4*plexi_cube_thickness+2*plexi_cube_buffer,darkener_overhang+2*plexi_cube_thickness,plexi_cube_length+4*plexi_cube_thickness+2*plexi_cube_buffer]);
-translate([plexi_cube_thickness+plexi_cube_buffer,0,plexi_cube_thickness+plexi_cube_buffer])cube([plexi_cube_width+2*plexi_cube_thickness+plexi_cube_buffer,darkener_overhang+2*plexi_cube_thickness,plexi_cube_length+2*plexi_cube_thickness+plexi_cube_buffer]);
-}
+    
+
+*translate([0,darkener_top_depth,0])difference(){
+cube([darkener_bottom_width,darkener_bottom_depth,darkener_bottom_length]);
+translate([plexi_cube_thickness+plexi_cube_buffer,0,plexi_cube_thickness+plexi_cube_buffer]) cube([plexi_cube_width+2*plexi_cube_thickness+3*plexi_cube_buffer,darkener_overhang+2*plexi_cube_thickness,plexi_cube_length+2*plexi_cube_thickness+3*plexi_cube_buffer]);
+
 }
