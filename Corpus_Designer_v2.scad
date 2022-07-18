@@ -1,5 +1,5 @@
 //Variables
-cube_design = 1;
+cube_design = "corpus"; //corpus, darkener or funnel
 grid_pattern = "squares"; //squares, squares2 (rotated by 45°)
 plexi_cube_width = 39; //39 for cube1, 32 for cube2
 plexi_cube_length = 35; //35 for cube1, 30 for cube2
@@ -88,6 +88,7 @@ for (i=[0:number_squares_per_row-1]){
 
 
 //Complete Corpus
+if (cube_design == "corpus"){
 union(){
 
 //plexi_cube part of the tube
@@ -321,10 +322,9 @@ color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]);
 }
 }
 
-// funnel
-
+}
 // darkener
-
+else if (cube_design == "darkener"){
 darkener_top_width = plexi_cube_width+2*plexi_cube_thickness+2*plexi_cube_buffer;
 darkener_top_depth = plexi_cube_depth_overall-plexi_cube_depth+plexi_cube_thickness;
 darkener_top_length = plexi_cube_length+2*plexi_cube_thickness+2*plexi_cube_buffer;
@@ -338,8 +338,15 @@ translate([2*plexi_cube_thickness+2*plexi_cube_buffer,plexi_cube_thickness,2*ple
 }
     
 
-*translate([0,darkener_top_depth,0])difference(){
+translate([0,darkener_top_depth,0])difference(){
 cube([darkener_bottom_width,darkener_bottom_depth,darkener_bottom_length]);
 translate([plexi_cube_thickness+plexi_cube_buffer,0,plexi_cube_thickness+plexi_cube_buffer]) cube([plexi_cube_width+2*plexi_cube_thickness+3*plexi_cube_buffer,darkener_overhang+2*plexi_cube_thickness,plexi_cube_length+2*plexi_cube_thickness+3*plexi_cube_buffer]);
 
+}
+}
+
+else if (cube_design == "funnel"){
+    funnel_length = tube_count * tube_depth - 8;
+    
+    
 }
