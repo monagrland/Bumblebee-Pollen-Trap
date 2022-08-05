@@ -1,5 +1,6 @@
-//Variables
-cube_design = "corpus"; //corpus, darkener or funnel
+ //Variables
+$fn = 50;
+cube_design = "funnel"; //corpus, darkener or funnel
 grid_pattern = "squares"; //squares, squares2 (rotated by 45°)
 plexi_cube_width = 39; //39 for cube1, 32 for cube2
 plexi_cube_length = 35; //35 for cube1, 30 for cube2
@@ -34,6 +35,18 @@ square_length = 4;
 square_distance = 2;
 number_squares_per_row = 4;
 number_squares_per_column = 2;
+
+funnel_slide_width = 4;
+funnel_slide_height = 7;
+funnel_slide_hollow_height = 3;
+funnel_slide_buffer_width = 0.2;
+funnel_pyramid_length = 32;
+funnel_pyramid_tip_height = 18;
+funnel_tip_cube_width = 14;
+funnel_tip_cube_length = 14;
+funnel_tip_cube_height = 11;
+funnel_hollow_cylinder_height = 20;
+funnel_hollow_cylinder_diameter = 7;
 
 //angle
 tube_distance_left = (plexi_cube_width/2+plexi_cube_buffer+plexi_cube_thickness-tube_width/2-tube_thickness);
@@ -87,7 +100,6 @@ for (i=[0:number_squares_per_row-1]){
 }
 
 
-//Complete Corpus
 if (cube_design == "corpus"){
 union(){
 
@@ -346,7 +358,62 @@ translate([plexi_cube_thickness+plexi_cube_buffer,0,plexi_cube_thickness+plexi_c
 }
 
 else if (cube_design == "funnel"){
-    funnel_length = tube_count * tube_depth - 8;
+    funnel_slide_length = tube_count * tube_depth - 8;
+    translate([0,funnel_pyramid_length+funnel_slide_width,0])
+    difference(){
+    cube([funnel_slide_length, funnel_slide_width, funnel_slide_height]);
+    translate([0,0,2])cube([funnel_slide_length,funnel_slide_width/2, funnel_slide_hollow_height]);
+    cube([funnel_slide_length, funnel_slide_buffer_width,2]);
+    }
+    translate([0,funnel_slide_width,0])mirror([0,1,0])difference(){
+    cube([funnel_slide_length, funnel_slide_width, funnel_slide_height]);
+    translate([0,0,2])cube([funnel_slide_length,funnel_slide_width/2, funnel_slide_hollow_height]);
+    cube([funnel_slide_length, funnel_slide_buffer_width,2]);
+    }
     
     
+    funnel_pyramid_points = [
+    [funnel_slide_length, funnel_pyramid_length,0],
+    [funnel_slide_length,0,0],
+    [0,0,0],
+    [0,funnel_pyramid_length,0],
+    [funnel_slide_length/2,funnel_pyramid_length/2,funnel_pyramid_tip_height]];
+    
+    funnel_pyramid_faces = [
+    [0,1,4],
+    [1,2,4],
+    [2,3,4],
+    [3,0,4],
+    [1,0,3],
+    [2,1,3]];
+    
+    funnel_pyramid_points_hollow = [
+    [funnel_slide_length, funnel_pyramid_length,-2],
+    [funnel_slide_length,0,-2],
+    [0,0,-2],
+    [0,funnel_pyramid_length,-2],
+    [funnel_slide_length/2,funnel_pyramid_length/2,funnel_pyramid_tip_height-1]];
+    
+    funnel_pyramid_faces_hollow = [
+    [0,1,4],
+    [1,2,4],
+    [2,3,4],
+    [3,0,4],
+    [1,0,3],
+    [2,1,3]];
+    
+    difference(){
+    union(){translate([0,funnel_slide_width,funnel_slide_height-2])cube([funnel_slide_length,funnel_pyramid_length, 2]);
+    translate([0,funnel_slide_width,funnel_slide_height])polyhedron(funnel_pyramid_points, funnel_pyramid_faces);
+    translate([funnel_slide_length/2-funnel_tip_cube_length/2,(funnel_pyramid_length+2*funnel_slide_width)/2-funnel_tip_cube_width/2,funnel_pyramid_tip_height+funnel_slide_height-funnel_tip_cube_height-1])cube([funnel_tip_cube_width, funnel_tip_cube_length, funnel_tip_cube_height]);
+    }
+    union(){
+    color("red")translate([0,funnel_slide_width,funnel_slide_height])polyhedron(funnel_pyramid_points_hollow, funnel_pyramid_faces_hollow);
+    
+    translate([funnel_slide_length/2,funnel_pyramid_length/2 + funnel_slide_width,10])color("turquoise")cylinder(h=funnel_hollow_cylinder_height, d=funnel_hollow_cylinder_diameter);
+    }
 }
+    
+
+    
+    }
