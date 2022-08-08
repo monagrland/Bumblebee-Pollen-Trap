@@ -1,5 +1,5 @@
 //Variables
-$fn = 200;
+$fn = 100;
 base_plate_length_lower = 26;
 base_plate_length_upper = 28;
 base_plate_width_lower = 34;
@@ -19,16 +19,16 @@ lower_bar_width = 2;
 lower_bar_height = 2;
 lower_bar_distance_from_bottom = 6;
 
-hole_structure = "concentric"; //None, slides, triangle(TODO) or concentric(TODO)
-outer_ring_width = 4;
-outer_ring_height = 2;
-inner_ring_width = 1;
-inner_ring_height = 1;
+hole_structure = "slides"; //None, slides, triangle(TODO) or concentric
+outer_ring_width = 4.0;
+outer_ring_height = 2.0;
+inner_ring_width = 1.0;
+inner_ring_height = 1.5;
 number_slides = 4;
 
-slide_width_factor = 1;
+slide_width_factor = 0.9;
 slide_length_factor = 1;
-slide_height_factor = 1;
+slide_height_factor = 0.9;
 
 concentric_height = 6;
 concentric_ring_height = 0.5;
@@ -48,9 +48,9 @@ module showPoints(v) {
 module slide (){
     width = 5.5;
     length = 4.5;
-    height = 4;
-    angle = 20;
-
+    height = 5;
+    angle = 30;
+difference(){
     render()intersection(){
     union(){
     translate([0,3.1,0.5])
@@ -60,7 +60,7 @@ module slide (){
     rotate([angle,0,0])
     difference(){
     scale([width*1.64,length*2.1,height*1.18]) sphere(d=1);
-    translate([0,0,2])rotate([90,0,180])cylinder(h=20,d1=10,d2=0,center=true);
+    translate([0,0,2])rotate([90,0,180])cylinder(h=40,d1=10,d2=1,center=true);
     }
     translate([-(length),6-(width*1.65)/2,0])cube([width*2,length*1.5,height*2]);
 }
@@ -102,6 +102,10 @@ module slide (){
 }
     translate([(-width*1.1)/2,0,0])cube([width*1.1,length,height*2]);
 }
+translate([0,0,-0.3])translate([1.5,length/2-3,height/2+0.2])rotate([30,0,0])rotate([0,30,0])cube([2,length*1.5,2]);
+translate([0,0,-0.3])translate([-3.5,-((length/2-3)+1),(height/2+0.2)-1])rotate([30,0,0])rotate([0,330,0])cube([2,length*1.5,2]);
+
+}
 }
 
 //module to create rings
@@ -124,13 +128,13 @@ module filter(diameter, outer_ring_width, outer_ring_height, inner_ring_width, i
     for (i=[0:number_slides-1]){
         X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * cos((360/number_slides)*i);
         Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * sin((360/number_slides)*i);
-        translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])scale([1,1,10])slide();
+        translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])scale([1,1,10])scale([slide_width_factor, slide_length_factor, slide_height_factor])slide();
     }
 }
     for (i=[0:number_slides-1]){
         X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * cos((360/number_slides)*i);
         Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * sin((360/number_slides)*i);
-        translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])slide();
+        translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])scale([slide_width_factor, slide_length_factor, slide_height_factor])slide();
     }
 
 }
@@ -257,7 +261,7 @@ bottom_bar_faces = [
 ];
 translate([(base_plate_length_upper-bar_length)/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom,base_plate_thickness])translate([bar_length,0,0])rotate([0,0,180])polyhedron(bottom_bar_points, bottom_bar_faces);
 if (hole_structure == "slides"){
-translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])scale([slide_width_factor, slide_length_factor, slide_height_factor])filter(diameter_hole, outer_ring_width, outer_ring_height, inner_ring_width,inner_ring_height,number_slides);
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])filter(diameter_hole, outer_ring_width, outer_ring_height, inner_ring_width,inner_ring_height,number_slides);
 }
 else if (hole_structure == "concentric"){
 translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])concentric(diameter_hole,concentric_height,concentric_ring_height,concentric_distance_top_bottom_hole,concentric_ring_width);
