@@ -1,5 +1,5 @@
 //Variables
-$fn = 100;
+$fn = 30;
 base_plate_length_lower = 26;
 base_plate_length_upper = 28;
 base_plate_width_lower = 34;
@@ -60,7 +60,7 @@ difference(){
     rotate([angle,0,0])
     difference(){
     scale([width*1.64,length*2.1,height*1.18]) sphere(d=1);
-    translate([0,0,2])rotate([90,0,180])cylinder(h=40,d1=10,d2=1,center=true);
+    translate([0,0,2])rotate([90,0,180])cylinder(h=40,d1=6,d2=6,center=true);
     }
     translate([-(length),6-(width*1.65)/2,0])cube([width*2,length*1.5,height*2]);
 }
@@ -102,8 +102,8 @@ difference(){
 }
     translate([(-width*1.1)/2,0,0])cube([width*1.1,length,height*2]);
 }
-translate([0,0,-0.3])translate([1.5,length/2-3,height/2+0.2])rotate([30,0,0])rotate([0,30,0])cube([2,length*1.5,2]);
-translate([0,0,-0.3])translate([-3.5,-((length/2-3)+1),(height/2+0.2)-1])rotate([30,0,0])rotate([0,330,0])cube([2,length*1.5,2]);
+translate([0,0,-0.6])translate([1.5,length/2-3,height/2+0.2])rotate([30,0,0])rotate([0,30,0])cube([2,length*1.5,2]);
+translate([0,0,-0.6])translate([-3.5,-((length/2-3)+1),(height/2+0.2)-1])rotate([30,0,0])rotate([0,330,0])cube([2,length*1.5,2]);
 
 }
 }
