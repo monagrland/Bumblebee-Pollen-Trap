@@ -28,7 +28,8 @@ number_slides = 4;
 
 slide_width_factor = 0.9;
 slide_length_factor = 1;
-slide_height_factor = 0.9;
+slide_height_factor = 1;
+slide_offset_from_center = 1;
 
 concentric_height = 6;
 concentric_ring_height = 0.5;
@@ -126,14 +127,14 @@ module filter(diameter, outer_ring_width, outer_ring_height, inner_ring_width, i
     translate([0,0,outer_ring_height])ring(inner_ring_height, diameter + 2*inner_ring_width, diameter);
     }
     for (i=[0:number_slides-1]){
-        X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * cos((360/number_slides)*i);
-        Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * sin((360/number_slides)*i);
+        X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)+slide_offset_from_center) * cos((360/number_slides)*i);
+        Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)+slide_offset_from_center) * sin((360/number_slides)*i);
         translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])scale([1,1,10])scale([slide_width_factor, slide_length_factor, slide_height_factor])slide();
     }
 }
     for (i=[0:number_slides-1]){
-        X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * cos((360/number_slides)*i);
-        Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)) * sin((360/number_slides)*i);
+        X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)+slide_offset_from_center) * cos((360/number_slides)*i);
+        Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)+slide_offset_from_center) * sin((360/number_slides)*i);
         translate([X,Y,outer_ring_height/2])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])scale([slide_width_factor, slide_length_factor, slide_height_factor])slide();
     }
 
@@ -239,7 +240,7 @@ insert_slot_upper_faces = [
 translate([0,base_plate_width_upper,0])rotate([90,0,0])polyhedron(insert_slot_upper_points,insert_slot_upper_faces);
 }
 //diameter text
-translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickness])rotate([0,0,180])linear_extrude(diameter_text_thickness)text(str(diameter_hole), size=diameter_text_size,halign="center",valign="center");
+translate([base_plate_length_upper/2,base_plate_width_upper/2,base_plate_thickness])rotate([0,0,180])linear_extrude(diameter_text_thickness)text(str(diameter_hole,"c"), size=diameter_text_size,halign="center",valign="center");
 
 //bottom bar/triangle
 bottom_bar_points=[
