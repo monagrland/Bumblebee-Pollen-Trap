@@ -1,0 +1,27 @@
+a:
+hole_structure: slides
+outer ring width 4
+outer ring height 2
+inner ring width 1
+inner ring height 1.5
+number slides 4
+slide width factor 0.7
+slide length factor 1
+slide height factor 1
+slide offset from center 0
+
+
+
+b:
+hole_structure: triangle
+number slides 4
+triangle height 4
+triangle length 3
+triangle thickness 1
+
+c:
+hole_structure: triangle2
+number slides 4
+triangle height 4
+triangle length 3
+triangle thickness 1
