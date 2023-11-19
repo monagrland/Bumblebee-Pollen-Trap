@@ -53,7 +53,7 @@ inner_ring_height_slides = 1.5;
 number_slides = 4;
 
 // multiplier for the width of the slides
-slide_width_factor = 0.9;
+slide_width_factor = 0.7;
 // multiplier for the length of the slides
 slide_length_factor = 1;
 // multiplier for the height of the slides
