@@ -1,46 +1,116 @@
 //Variables
-$fn = 100;
+/* [Base Plate] */
+//length of the lower part of the base plate
 base_plate_length_lower = 26;
+//length of the upper part of the base plate
 base_plate_length_upper = 28;
+//width of the lower part of the base plate
 base_plate_width_lower = 34;
+//length of the upper part of the base plate
 base_plate_width_upper = 18;
+//thickness of the baseplate
 base_plate_thickness = 2;
-
-bar_type = "angled"; //bar or angled (for easier printing)
+// type of bar, newer versions only use "angled"
+bar_type = "angled"; // [angled, bar]
+// length of the bar
 bar_length = 16;
+// width of the bar
 bar_width = 2;
+// height of the bar
 bar_height = 6;
 
-diameter_hole = 6.5;
+//diameter of the hole, also input for the text at the top
+diameter_hole = 5.5;
+// thickness of the text at the top
 diameter_text_thickness = 2;
+// size of the text at the top
 diameter_text_size = 8;
 
+// additional text at the top
+identifier = "a";
+
+// width of the lower bar
 lower_bar_width = 2;
+// height of the lower bar
 lower_bar_height = 2;
+// distance from the bottom of the base plate to the lower bar
 lower_bar_distance_from_bottom = 6;
 
-hole_structure = "slides"; //None, slides, triangle(TODO) or concentric
-outer_ring_width = 4.0;
-outer_ring_height = 2.0;
-inner_ring_width = 1.0;
-inner_ring_height = 1.5;
+/* [Hole Structure] */
+// structure of the design around the hole
+hole_structure = "triangle2"; //  [None, slides, triangle, triangle2, concentric, brush]
+
+/* [Hole Structure == Slides] */
+// width of the outer ring
+outer_ring_width_slides = 4.0;
+// height of the outer ring
+outer_ring_height_slides = 2.0;
+// width of the inner ring
+inner_ring_width_slides = 1.0;
+// height of the outer ring
+inner_ring_height_slides = 1.5;
+// number of slides, will be automatically oriented around the center of the hole
 number_slides = 4;
 
+// multiplier for the width of the slides
 slide_width_factor = 0.9;
+// multiplier for the length of the slides
 slide_length_factor = 1;
+// multiplier for the height of the slides
 slide_height_factor = 1;
-slide_offset_from_center = 1;
+// offset of the slides from the center of the hole
+slide_offset_from_center = 0;
 
-concentric_height = 6;
-concentric_ring_height = 0.5;
-concentric_distance_top_bottom_hole = 6;
-concentric_ring_width = 1;
-
-triangle_height = 6;
+/* [Hole Structure == Triangle] */
+// width of the outer ring
+outer_ring_width_triangle = 4.0;
+// height of the outer ring
+outer_ring_height_triangle = 2.0;
+// width of the inner ring
+inner_ring_width_triangle = 1.0;
+// height of the inner ring
+inner_ring_height_triangle = 1.5;
+// number of bars, will be automatically oriented around the center of the hole
+number_bars_triangle = 10;
+// height of the triangles
+triangle_height = 4;
+// length of the triangles
 triangle_length = 3;
+// thickness of the triangles
 triangle_thickness = 1;
 
-identifier = "";
+/* [Hole Structure == Triangle2] */
+// width of the outer ring
+outer_ring_width_triangle2 = 4.0;
+// height of the outer ring
+outer_ring_height_triangle2 = 2.0;
+// width of the inner ring
+inner_ring_width_triangle2 = 1.0;
+// height of the inner ring
+inner_ring_height_triangle2 = 1.5;
+// number of bars, will be automatically oriented around the center of the hole
+number_bars_triangle2 = 10;
+// height of the triangles
+triangle2_height = 4;
+// length of the triangles
+triangle2_length = 3;
+// thickness of the triangles
+triangle2_thickness = 1;
+
+/* [Hole Structure == Concentric] */
+// height of the cone, careful, cant be higher than the upper bar or it will get stuck!
+concentric_height = 6;
+// starting point of the concentric rings, 
+concentric_ring_height = 1.5;
+// distance top to bottom hole
+concentric_distance_top_bottom_hole = 6;
+// width of the concentric rings
+concentric_ring_width = 1;
+
+/* [Misc] */
+// Number of Faces: higher number is good for smoother curved areas, lower number significantly decreases rendering time, recommending 25 for playing around and 100 for exporting
+$fn = 25;
+
 
 //module to show points of a polyhedron
 module showPoints(v) {
@@ -116,7 +186,7 @@ translate([0,0,-0.6])translate([-3.5,-((length/2-3)+1),(height/2+0.2)-1])rotate(
 }
 
 //module to create triangular bars
-module triangle_bars(){
+module triangle_bars(triangle_thickness,triangle_height, triangle_length){
     triangle_points = [
     [0,0,0],
     [triangle_thickness,0,0],
@@ -165,25 +235,30 @@ module filter(diameter, outer_ring_width, outer_ring_height, inner_ring_width, i
     }
 }
 
-module filter_triangle(diameter, outer_ring_width, outer_ring_height, inner_ring_width, inner_ring_height, number_slides){
+module filter_triangle(diameter, outer_ring_width, outer_ring_height, inner_ring_width, inner_ring_height, number_slides, triangle_thickness,triangle_height, triangle_length){
     difference(){
     union(){
     ring(outer_ring_height, diameter + 2*outer_ring_width, diameter);
     translate([0,0,outer_ring_height])ring(inner_ring_height, diameter + 2*inner_ring_width, diameter);
     }
     
-    /*for (i=[0:number_slides-1]){
-        X = ((diameter/2)+outer_ring_width+(inner_ring_width/2)+slide_offset_from_center) * cos((360/number_slides)*i);
-        Y = ((diameter/2)+outer_ring_width+(inner_ring_width/2)+slide_offset_from_center) * sin((360/number_slides)*i);
-        translate([X,Y,outer_ring_height])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])scale([1,1,10])triangle_bars();
-    }*/
 }
     for (i=[0:number_slides-1]){
         X = ((diameter/2)+slide_offset_from_center) * cos((360/number_slides)*i);
         Y = ((diameter/2)+slide_offset_from_center) * sin((360/number_slides)*i);
-        translate([X,Y,outer_ring_height])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])triangle_bars();
+        translate([X,Y,outer_ring_height])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])triangle_bars(triangle_thickness,triangle_height, triangle_length);
     }
 }
+
+module filter_triangle2(diameter, outer_ring_width, outer_ring_height, inner_ring_width, inner_ring_height,bar_width, number_slides, triangle_thickness,triangle_height, triangle_length){
+    for (i=[0:number_slides-1]){
+        X = ((diameter/2)+triangle_height) * cos((360/number_slides)*i);
+        Y = ((diameter/2)+triangle_height) * sin((360/number_slides)*i);
+        translate([X,Y,-bar_width])rotate(90,[0,0,1])rotate((360/number_slides)*i,[0,0,1])rotate(270,[1,0,0])triangle_bars(triangle_thickness,triangle_height, triangle_length);
+    }
+    ring(triangle_length-bar_width, diameter + 2*triangle_height + 2, diameter+2*triangle_height);
+}
+
 //module to create concenctric filter model
 module concentric(diameter,height,ring_height,distance_top_bottom,ring_width){
     difference(){
@@ -206,6 +281,7 @@ module concentric(diameter,height,ring_height,distance_top_bottom,ring_width){
     translate([0,0,ring4_height-ring_height])color("orange")ring(h=ring_height,outside_diameter=ring4_outside_diameter, cutout_diameter = ring4_outside_diameter - ring_width);
 
 }
+
 
 difference(){
 union(){
@@ -306,18 +382,32 @@ bottom_bar_faces = [
 [1,2,5],
 ];
 translate([(base_plate_length_upper-bar_length)/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom,base_plate_thickness])translate([bar_length,0,0])rotate([0,0,180])polyhedron(bottom_bar_points, bottom_bar_faces);
+}
+//hole
+if (hole_structure == "triangle2"){
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,0])cylinder(h=base_plate_thickness, d=diameter_hole+2*triangle_height);
+}
+else if (hole_structure == "brush"){
+    translate([(base_plate_length_upper-base_plate_length_lower)/2 +3,base_plate_width_upper,0])cube([base_plate_length_lower-6,base_plate_width_lower-lower_bar_distance_from_bottom-lower_bar_width,2]);
+}
+
+else{
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,0])cylinder(h=base_plate_thickness, d=diameter_hole);
+}
+
+}
 if (hole_structure == "slides"){
-translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])filter(diameter_hole, outer_ring_width, outer_ring_height, inner_ring_width,inner_ring_height,number_slides);
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])filter(diameter_hole, outer_ring_width_slides, outer_ring_height_slides, inner_ring_width_slides,inner_ring_height_slides,number_slides);
 }
 else if (hole_structure == "triangle"){
-translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])filter_triangle(diameter_hole, outer_ring_width, outer_ring_height, inner_ring_width,inner_ring_height,number_slides);
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])filter_triangle(diameter_hole, outer_ring_width_triangle, outer_ring_height_triangle, inner_ring_width_triangle,inner_ring_height_triangle,number_bars_triangle,triangle_thickness,triangle_height, triangle_length);
 }
+
+else if (hole_structure == "triangle2"){
+translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])filter_triangle2(diameter_hole, outer_ring_width_triangle2, outer_ring_height_triangle2, inner_ring_width_triangle2,inner_ring_height_triangle2,bar_width, number_bars_triangle2,triangle2_thickness,triangle2_height, triangle2_length);
+}
+
 else if (hole_structure == "concentric"){
 translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,base_plate_thickness])concentric(diameter_hole,concentric_height,concentric_ring_height,concentric_distance_top_bottom_hole,concentric_ring_width);
 }
 
-
-}
-//hole
-translate([base_plate_length_upper/2,base_plate_width_lower+base_plate_width_upper-lower_bar_distance_from_bottom-(diameter_hole/2+14/2)-lower_bar_width,0])cylinder(h=base_plate_thickness, d=diameter_hole);
-}
