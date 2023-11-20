@@ -10,7 +10,7 @@ If you just want to print the files used in Krüger et al, you can go to the "ST
 ## Getting Started
 Do you have ideas to improve the Pollenstripper? Feel free to modify the design however you want. A lot of modifications can be done without any knowledge in 3D-Design. All you need are the files in this repository and the open source software [OpenSCAD](https://openscad.org/). It can be freely downloaded from the website. 
 
-After installing OpenSCAD you can download this repository by clicking on "Code" and selecting "Download ZIP". After finishing the download you can unpack the directory to you prefered path.
+After installing OpenSCAD you can download this repository by clicking on "Code" and selecting "Download ZIP". After finishing the download you can unpack the directory to your prefered path.
 Now you can chose which parts you want to modify. 
 
 If you want to modify the corpus, the darkener or the funnel, you can open the corpus_designer.scad file with OpenSCAD. If you want to modify the filter inserts, you can open the filter_designer.scad file with OpenSCAD.
