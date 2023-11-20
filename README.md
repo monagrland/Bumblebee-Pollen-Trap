@@ -12,9 +12,12 @@ Do you have ideas to improve the Pollenstripper? Feel free to modify the design 
 
 After installing OpenSCAD you can download this repository by clicking on "Code" and selecting "Download ZIP". After finishing the download you can unpack the directory to you prefered path.
 Now you can chose which parts you want to modify. 
+
 If you want to modify the corpus, the darkener or the funnel, you can open the corpus_designer.scad file with OpenSCAD. If you want to modify the filter inserts, you can open the filter_designer.scad file with OpenSCAD.
-After opening the file you should see by default four different windows. On the Left the "Editor" shows you the code used to create the designs. On the bottom you can see the console, whcih puts out information about the rendering and if there were occuring errors. In the middle you can see the current preview of your 3D-Object. On the fourth panel on the right you can find the customizer. If the customizer is not open, you can open it by clicking on the "Window" menu and unselecting the "Hide customizer" option.
+After opening the file you should see by default four different windows. On the Left the **Editor** shows you the code used to create the designs. On the bottom you can see the **Console**, which offers information about the rendering and if there were occuring errors. In the middle you can see the current preview of your 3D-Object. On the fourth panel on the right you can find the **Customizer**. If the Customizer is not open, you can open it by clicking on the **Window** menu and unselecting the **Hide customizer** option.
 You can update the preview by pressing F5 and you can render the model with F6.
+
+For further information about OpenSCAD, take a look at the [docs](https://openscad.org/documentation.html).  
 
 
 ## DIY Corpus, Darkener, Funnel & Brush-Corpus
