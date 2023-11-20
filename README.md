@@ -7,6 +7,7 @@ This repository contains .scad and STL files as well as json presets for the bum
 If you just want to print the files used in Krüger et al, you can go to the "STL_Files" directory and download all STL files that you want to print. Almost all files can be easily printed in PLA or PETG. Almost all files can be printed without supports, only the corpus minorly profits from supports and (if you want to try it) the funnel would definitely need support structures.
 
 # DIY Pollenstripper
+## Getting Started
 Do you have ideas to improve the Pollenstripper? Feel free to modify the design however you want. A lot of modifications can be done without any knowledge in 3D-Design. All you need are the files in this repository and the open source software [OpenSCAD](https://openscad.org/). It can be freely downloaded from the website. 
 
 After installing OpenSCAD you can download this repository by clicking on "Code" and selecting "Download ZIP". After finishing the download you can unpack the directory to you prefered path.
@@ -15,9 +16,13 @@ If you want to modify the corpus, the darkener or the funnel, you can open the c
 After opening the file you should see by default four different windows. On the Left the "Editor" shows you the code used to create the designs. On the bottom you can see the console, whcih puts out information about the rendering and if there were occuring errors. In the middle you can see the current preview of your 3D-Object. On the fourth panel on the right you can find the customizer. If the customizer is not open, you can open it by clicking on the "Window" menu and unselecting the "Hide customizer" option.
 You can update the preview by pressing F5 and you can render the model with F6.
 
+
 ## DIY Corpus, Darkener, Funnel & Brush-Corpus
 If you want to modify the corpus, the darkener, the funnel or the brush-corpus you have two different options: either you use the customizer and play around with the options available without the need of any knowledge regarding 3D-design or programming or you can modify the code itself to create something completely custom. 
 If you want to use the customizer, the variables are seperated into different tabs.
+
+### Presets
+If you don't want to create your designs from scratch, you can also use one of the available presets. You can find the presets at the top of the customizer. The preset *corpus* contains the settings for the corpus used in Krüger et al, while the preset *corpus with grid* has the same settings but with a grid at the bottom of the corpus. The *darkener* preset contains the settings for the darkener used in Krüger et al.
 
 ### Parameters
 In the `Parameters` tab you can select which part you want to create or modify. 
@@ -47,12 +52,13 @@ Earlier iterations had a grid where the pollen was supposed to fall through (see
 ### Misc
 The `Misc` tab only contains the $fn variable which is used to define the number of fragments used to draw an arc. A higher value creates smoother arcs but also significantly increases the rendering time. If you just want to play around with the values i would recommend a lower $fn, for example 25, and to later increase it after you finished your model and create the rendering for the export of the file. My recommendation herefore would be a value of 100.
 
-### Presets
-If you don't want to create your designs from scratch, you can also use one of the available presets. The preset *corpus* contains the settings for the corpus used in Krüger et al, while the preset *corpus with grid* has the same settings but with a grid at the bottom of the corpus. The *darkener* preset contains the settings for the darkener used in Krüger et al.
 
 ## DIY Filter Inserts
 If you want to create or modify the filter inserts, you can either use the customizer and play around with the options available without the need of any knowledge regarding 3D-Design or programming or you can modify the code itself to create something completely custom
 If you want to use the customizer, the variables here are also seperated into different tabs.
+
+### Presets
+If you don't want to create your designs from scratch, you can also use one of the available presets. You can find the presets at the top of the customizer. The preset *Preset a* contains the settings for the filter insert *a* as described in Krüger et al, while *Preset b* and *Preset c* are used for the other two described filter inserts. To recreate all filter inserts from the publication you can select the presets and just edit the diameter of the hole inside the `Base Plate` tab. 
 
 ### Base Plate
 The `Base Plate` tab allows changes to the dimensions of the base plate, the bars on the base plate as well as the text on top of the base plate.
