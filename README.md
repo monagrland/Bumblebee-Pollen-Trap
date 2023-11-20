@@ -4,13 +4,13 @@ This repository contains .scad and STL files as well as json presets for the bum
 
 ## Printing the Files
 
-If you just want to print the files used in Krüger et al, you can go to the "STL_Files" directory and download all STL files that you want to print. Almost all files can be easily printed in PLA or PETG. Almost all files can be printed without supports, only the corpus minorly profits from supports and (if you want to try it) the funnel would definitely need support structures.
+If you just want to print the files used in Krüger et al, you can go to the "STL_Files" directory and download all STL files that you want to print. Almost all files can be easily printed in PLA or PETG. If you want to use the pollen for DNA sequencing, we would recommend to use thermostable materials like ASA or ABS, to be able to clean the parts with boiling water. Almost all files can be printed without supports, with the exception of the funnel. The corpus minorly profits from supports but they are not a necessity.
 
 # DIY Pollenstripper
 ## Getting Started
 Do you have ideas to improve the Pollenstripper? Feel free to modify the design however you want. A lot of modifications can be done without any knowledge in 3D-Design. All you need are the files in this repository and the open source software [OpenSCAD](https://openscad.org/). It can be freely downloaded from the website. 
 
-After installing OpenSCAD you can download this repository by clicking on "Code" and selecting "Download ZIP". After finishing the download you can unpack the directory to your prefered path.
+After installing OpenSCAD you can download this repository by clicking on "Code" and selecting "Download ZIP". After finishing the download you can unpack the directory to you prefered path.
 Now you can chose which parts you want to modify. 
 
 If you want to modify the corpus, the darkener or the funnel, you can open the corpus_designer.scad file with OpenSCAD. If you want to modify the filter inserts, you can open the filter_designer.scad file with OpenSCAD.
