@@ -112,7 +112,7 @@ concentric_ring_width = 1;
 $fn = 25;
 
 
-//module to show points of a polyhedron
+//module to show points of a polyhedron, see https://gusmith.wordpress.com/tag/openscad/
 module showPoints(v) {
     for (i = [0: len(v)-1]) {
         translate(v[i]) color("red")
