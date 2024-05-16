@@ -1,6 +1,6 @@
  //Variables
 // Select which part you want to create: corpus is the main part of the pollenstripper, corpus_brush is a version of the pollenstripper with angled mounts for brushes, the darkener is a part that sits on top of the plexiglas cube to keep light from getting in and the funnel was meant to collect the pollen after it fell off and through the grid (deprecated)
-cube_design = "corpus"; // [corpus, corpus_brush, darkener, funnel]
+cube_design = "corpus"; // [corpus, corpus_dual_cube, corpus_brush, darkener, funnel]
 
 /* [Acrylic Cube] */
 plexi_cube_width = 39; //39 for cube1, 32 for cube2
@@ -9,6 +9,14 @@ plexi_cube_depth_overall = 30;
 plexi_cube_depth = 20; //this is for the main corpus
 plexi_cube_thickness = 2;
 plexi_cube_buffer = 0.5; //1mm room in every direction
+
+/* [Acrylic Cube 2: Only necessary for dual cube corpus] */
+plexi_cube_width2 = 39; //39 for cube1, 32 for cube2
+plexi_cube_length2 = 35; //35 for cube1, 30 for cube2
+plexi_cube_depth_overall2 = 30;
+plexi_cube_depth2 = 20; //this is for the main corpus
+plexi_cube_thickness2 = 2;
+plexi_cube_buffer2 = 0.5; //1mm room in every direction
 
 /* [Darkener] */
 // The length that the darkener overlaps with the corpus
@@ -114,6 +122,13 @@ tube_distance_bottom = (plexi_cube_length/2+plexi_cube_buffer+plexi_cube_thickne
 angle_depth = max(tube_distance_left, tube_distance_bottom);
 outer_cube_width = plexi_cube_width + 2*plexi_cube_thickness + 2*plexi_cube_buffer;
 outer_cube_length = plexi_cube_length + 2*plexi_cube_thickness + 2*plexi_cube_buffer;
+
+//angle2
+tube_distance_left2 = (plexi_cube_width2/2+plexi_cube_buffer2+plexi_cube_thickness2-tube_width/2-tube_thickness);
+tube_distance_bottom2 = (plexi_cube_length2/2+plexi_cube_buffer2+plexi_cube_thickness2-tube_length/2-tube_thickness);
+angle_depth2 = max(tube_distance_left2, tube_distance_bottom2);
+outer_cube_width2 = plexi_cube_width2 + 2*plexi_cube_thickness2 + 2*plexi_cube_buffer2;
+outer_cube_length2 = plexi_cube_length2 + 2*plexi_cube_thickness2 + 2*plexi_cube_buffer2;
 
 //module to create triangles
 module triangle(width,length,height){
@@ -425,6 +440,269 @@ color("red"){cube([slide_bar_width,slide_bar_length,slide_bar_height]);
 }
 }
 // -----------------------------------------
+
+if (cube_design == "corpus_dual_cube"){
+union(){
+
+//plexi_cube part of the tube
+    
+difference(){
+    cube([plexi_cube_width + 2*plexi_cube_thickness + 2*plexi_cube_buffer, plexi_cube_depth, plexi_cube_length+2*plexi_cube_thickness + 2*plexi_cube_buffer]);
+    translate([plexi_cube_thickness,0,plexi_cube_thickness])cube([plexi_cube_width + 2*plexi_cube_buffer, plexi_cube_depth, plexi_cube_length + 2*plexi_cube_buffer]);
+}
+
+//angle
+angle_points = [
+    [0,0,0], //0
+    [outer_cube_width,0,0],//1
+    [outer_cube_width,0,outer_cube_length],//2
+    [0,0,outer_cube_length],//3
+    [tube_distance_left,0,tube_distance_bottom],//4
+    [outer_cube_width-tube_distance_left,0,tube_distance_bottom],//5
+    [outer_cube_width-tube_distance_left,0,outer_cube_length-tube_distance_bottom],//6
+    [tube_distance_left,0,outer_cube_length-tube_distance_bottom],//7
+    [tube_distance_left,angle_depth,tube_distance_bottom],//8
+    [outer_cube_width-tube_distance_left,angle_depth,tube_distance_bottom],//9
+    [outer_cube_width-tube_distance_left,angle_depth,outer_cube_length-tube_distance_bottom],//10
+    [tube_distance_left,angle_depth,outer_cube_length-tube_distance_bottom],//11
+    
+];
+
+*showPoints(angle_points);
+angle_faces = [
+    [1,0,4,5],
+    [0,1,9,8],
+    [5,4,8,9],
+    [2,1,5,6],
+    [1,2,10,9],
+    [6,5,9,10],
+    [3,2,6,7],
+    [2,3,11,10],
+    [7,6,10,11],
+    [0,3,7,4],
+    [3,0,8,11],
+    [4,7,11,8],
+];
+
+
+translate([0,plexi_cube_depth,0])
+polyhedron(angle_points, angle_faces);
+
+translate([((plexi_cube_width-tube_width)/2)-((plexi_cube_width2-tube_width)/2),angle_depth+plexi_cube_depth2 + tube_count*tube_depth-1 ,((plexi_cube_length-tube_length)/2)-((plexi_cube_length2-tube_length)/2)])union(){
+
+//plexi_cube2 part of the tube
+    
+translate([0,angle_depth2,0])difference(){
+    cube([plexi_cube_width2 + 2*plexi_cube_thickness2 + 2*plexi_cube_buffer2, plexi_cube_depth2, plexi_cube_length2+2*plexi_cube_thickness2 + 2*plexi_cube_buffer2]);
+    translate([plexi_cube_thickness2,0,plexi_cube_thickness2])cube([plexi_cube_width2 + 2*plexi_cube_buffer2, plexi_cube_depth2, plexi_cube_length2 + 2*plexi_cube_buffer2]);
+}
+
+//angle2
+angle_points = [
+    [0,angle_depth2,0], //0
+    [outer_cube_width2,angle_depth2,0],//1
+    [outer_cube_width2,angle_depth2,outer_cube_length2],//2
+    [0,angle_depth2,outer_cube_length2],//3
+    [tube_distance_left2,0,tube_distance_bottom2],//4
+    [outer_cube_width2-tube_distance_left2,0,tube_distance_bottom2],//5
+    [outer_cube_width2-tube_distance_left2,0,outer_cube_length2-tube_distance_bottom2],//6
+    [tube_distance_left2,0,outer_cube_length2-tube_distance_bottom2],//7
+    [tube_distance_left2,angle_depth2,tube_distance_bottom2],//8
+    [outer_cube_width2-tube_distance_left2,angle_depth2,tube_distance_bottom2],//9
+    [outer_cube_width2-tube_distance_left2,angle_depth2,outer_cube_length2-tube_distance_bottom2],//10
+    [tube_distance_left2,angle_depth2,outer_cube_length2-tube_distance_bottom2],//11
+    
+];
+
+*showPoints(angle_points);
+angle_faces = [
+    [1,0,4,5],
+    [0,1,9,8],
+    [5,4,8,9],
+    [2,1,5,6],
+    [1,2,10,9],
+    [6,5,9,10],
+    [3,2,6,7],
+    [2,3,11,10],
+    [7,6,10,11],
+    [0,3,7,4],
+    [3,0,8,11],
+    [4,7,11,8],
+];
+
+
+
+polyhedron(angle_points, angle_faces);
+}
+
+//tube
+translate([plexi_cube_width/2-tube_width/2 + plexi_cube_buffer,plexi_cube_depth ,plexi_cube_length/2-tube_length/2 + plexi_cube_buffer]) 
+for(i=[0:tube_count-1]){
+if (i==0){
+translate([0,tube_depth*i,0])    
+union(){
+difference(){
+    cube([tube_width+2*tube_thickness, tube_depth + angle_depth, tube_length + 2*tube_thickness]);
+    translate([tube_thickness,0,tube_thickness])cube([tube_width, tube_depth + angle_depth, tube_length]);
+    
+
+insert_slot_upper_points = [
+    [0,0,0], //0
+    [insert_base_length,0,0],//1
+    [insert_base_length,insert_thickness + insert_buffer, 0],//2
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//3
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//4
+    [0,insert_thickness + insert_buffer, 0],//5
+    [0,0,tube_thickness], //6
+    [insert_base_length,0,tube_thickness],//7
+    [insert_base_length,insert_thickness + insert_buffer, tube_thickness],//8
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//9
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//10
+    [0,insert_thickness + insert_buffer, tube_thickness],//11
+];
+
+*showPoints(insert_slot_upper_points);
+
+insert_slot_upper_faces = [
+    [0,1,2,3,4,5],
+    [0,5,11,6],
+    [5,4,10,11],
+    [4,3,9,10],
+    [3,2,8,9],
+    [2,1,7,8],
+    [1,0,6,7],
+    [11,10,9,8,7,6]
+];
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_bar_height+insert_thickness+insert_buffer)-insert_distance_from_tube_end,tube_length+tube_thickness])translate([insert_base_length,insert_bar_height + insert_thickness + insert_buffer,0])rotate([0,0,180])polyhedron(insert_slot_upper_points,insert_slot_upper_faces);
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_thickness+insert_buffer)-insert_distance_from_tube_end,0])cube([insert_base_length,insert_thickness+insert_buffer,tube_thickness]);
+
+
+if (grid_pattern == "squares") square_grid();
+else if (grid_pattern == "squares2") square_grid2();   
+    
+}
+
+//security_bar
+translate([tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])translate([0,insert_distance_from_tube_end,0])rotate([0,0,270])triangle(insert_distance_from_tube_end,security_bar_width,tube_length);
+translate([tube_width-tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])triangle(insert_distance_from_tube_end,security_bar_width,tube_length);
+
+
+
+}
+}
+else if (i<tube_count-1){
+translate([0,tube_depth*i,0])    
+union(){
+difference(){
+    translate([0,angle_depth,0])
+    cube([tube_width+2*tube_thickness, tube_depth , tube_length + 2*tube_thickness]);
+    translate([tube_thickness,0,tube_thickness])cube([tube_width, tube_depth + angle_depth, tube_length]);
+    
+
+insert_slot_upper_points = [
+    [0,0,0], //0
+    [insert_base_length,0,0],//1
+    [insert_base_length,insert_thickness + insert_buffer, 0],//2
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//3
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//4
+    [0,insert_thickness + insert_buffer, 0],//5
+    [0,0,tube_thickness], //6
+    [insert_base_length,0,tube_thickness],//7
+    [insert_base_length,insert_thickness + insert_buffer, tube_thickness],//8
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//9
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//10
+    [0,insert_thickness + insert_buffer, tube_thickness],//11
+];
+
+*showPoints(insert_slot_upper_points);
+
+insert_slot_upper_faces = [
+    [0,1,2,3,4,5],
+    [0,5,11,6],
+    [5,4,10,11],
+    [4,3,9,10],
+    [3,2,8,9],
+    [2,1,7,8],
+    [1,0,6,7],
+    [11,10,9,8,7,6]
+];
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_bar_height+insert_thickness+insert_buffer)-insert_distance_from_tube_end,tube_length+tube_thickness])translate([insert_base_length,insert_bar_height + insert_thickness + insert_buffer,0])rotate([0,0,180])polyhedron(insert_slot_upper_points,insert_slot_upper_faces);
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_thickness+insert_buffer)-insert_distance_from_tube_end,0])cube([insert_base_length,insert_thickness+insert_buffer,tube_thickness]);
+
+
+if (grid_pattern == "squares") square_grid();
+else if (grid_pattern == "squares2") square_grid2();   
+    
+}
+
+//security_bar
+translate([tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])translate([0,insert_distance_from_tube_end,0])rotate([0,0,270])triangle(insert_distance_from_tube_end,security_bar_width,tube_length);
+translate([tube_width-tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])triangle(insert_distance_from_tube_end,security_bar_width,tube_length);
+
+}
+}
+else if (i==tube_count-1){
+translate([0,tube_depth*i,0])    
+union(){
+difference(){
+    translate([0,angle_depth,0])
+    cube([tube_width+2*tube_thickness, tube_depth , tube_length + 2*tube_thickness]);
+    translate([tube_thickness,0,tube_thickness])cube([tube_width, tube_depth + angle_depth, tube_length]);
+    
+//insert_slot
+insert_slot_upper_points = [
+    [0,0,0], //0
+    [insert_base_length,0,0],//1
+    [insert_base_length,insert_thickness + insert_buffer, 0],//2
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//3
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,0],//4
+    [0,insert_thickness + insert_buffer, 0],//5
+    [0,0,tube_thickness], //6
+    [insert_base_length,0,tube_thickness],//7
+    [insert_base_length,insert_thickness + insert_buffer, tube_thickness],//8
+    [insert_base_length/2 + insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//9
+    [insert_base_length/2 - insert_bar_length/2,insert_thickness + insert_buffer + insert_bar_height,tube_thickness],//10
+    [0,insert_thickness + insert_buffer, tube_thickness],//11
+];
+
+*showPoints(insert_slot_upper_points);
+
+insert_slot_upper_faces = [
+    [0,1,2,3,4,5],
+    [0,5,11,6],
+    [5,4,10,11],
+    [4,3,9,10],
+    [3,2,8,9],
+    [2,1,7,8],
+    [1,0,6,7],
+    [11,10,9,8,7,6]
+];
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_bar_height+insert_thickness+insert_buffer)-insert_distance_from_tube_end,tube_length+tube_thickness])translate([insert_base_length,insert_bar_height + insert_thickness + insert_buffer,0])rotate([0,0,180])polyhedron(insert_slot_upper_points,insert_slot_upper_faces);
+
+translate([tube_width/2+tube_thickness-insert_base_length/2,tube_depth+angle_depth-(insert_thickness+insert_buffer)-insert_distance_from_tube_end,0])cube([insert_base_length,insert_thickness+insert_buffer,tube_thickness]);
+
+
+if (grid_pattern == "squares") square_grid();
+else if (grid_pattern == "squares2") square_grid2();   
+    
+}
+//security_bar
+translate([tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])cube([security_bar_width,insert_distance_from_tube_end,tube_length]);
+translate([tube_width-tube_thickness,tube_depth+angle_depth-insert_distance_from_tube_end,tube_thickness])cube([security_bar_width,insert_distance_from_tube_end,tube_length]);
+
+}
+}
+}
+}
+}
+// -----------------------------------------
+
+
 if (cube_design == "corpus_brush"){
 union(){
 
